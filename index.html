@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>七年级数学自适应测验</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>七年级数学自适应测验</h1>
+      <p class="subtitle">Self-Adaptive Quiz for Grade 7 Math</p>
+      <button id="open-teacher-btn" class="secondary">教师面板 / Teacher Panel</button>
+    </header>
+
+    <section id="start-section">
+      <label for="student-name">请输入学生姓名 / Enter your name:</label>
+      <input type="text" id="student-name" placeholder="如：张三" />
+      <label for="total-questions-select">题量 / Number of questions:</label>
+      <select id="total-questions-select">
+        <option value="21">一般（21题） - 可进行3轮测试</option>
+        <option value="35">中等（35题） - 可进行5轮测试</option>
+        <option value="49">多（49题） - 可进行7轮测试</option>
+      </select>
+       <button id="start-btn">开始测试 / Start</button>
+    </section>
+
+    <section id="quiz-section" class="hidden">
+      <div class="status-bar">
+        <div>学生：<span id="student-display"></span></div>
+        <div>进度：<span id="progress-display">0/10</span></div>
+        <div>当前能力项：<span id="skill-display"></span></div>
+        <div>难度：<span id="difficulty-display"></span></div>
+        <button id="view-wrong-btn" class="secondary">错题清单 / View Wrong</button>
+      </div>
+
+      <div class="card" id="question-card">
+        <div class="question" id="question-text"></div>
+        <div class="answer-area">
+          <input type="text" id="answer-input" placeholder="在此作答 / Answer here" />
+          <!-- 数学符号键盘（仅在整式化简题显示） -->
+          <button id="submit-answer-btn">提交答案 / Submit</button>
+          <div id="answer-preview" class="answer-preview hidden" aria-live="polite"></div>
+        </div>
+        <div id="feedback" class="feedback"></div>
+        <div id="ease-query" class="ease-query hidden">
+          <p>这题是否太简单？ / Was this too easy?</p>
+          <button id="too-easy-btn">是，太简单 / Too easy</button>
+          <button id="just-right-btn">不，难度合适 / Just right</button>
+        </div>
+        <div class="actions">
+          <button id="next-question-btn" class="hidden">下一题 / Next</button>
+          <button id="end-btn" class="secondary">结束测试 / End Test</button>
+        </div>
+      </div>
+      <div class="card hidden" id="wrong-card">
+        <h2>错题清单 / Wrong Questions</h2>
+        <div id="wrong-content"></div>
+        <div class="actions">
+          <button id="close-wrong-btn" class="secondary">关闭 / Close</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="summary-card">
+        <h2>测验总结 / Summary</h2>
+        <div id="summary-content"></div>
+        <button id="restart-btn">重新开始 / Restart</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- LeanCloud JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+  <!-- Math.js for expression parsing and evaluation -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.9.1/lib/browser/math.js"></script>
+  <!-- MathJax for math rendering -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="main.js" defer></script>
+
+  <!-- Teacher Panel -->
+  <section id="teacher-panel" class="hidden container">
+    <div class="card">
+      <h2>教师面板 / Teacher Panel</h2>
+      <div id="teacher-auth">
+        <label for="teacher-pass">密码 / Password:</label>
+        <input type="password" id="teacher-pass" placeholder="123456" />
+        <button id="teacher-login-btn">登录 / Login</button>
+        <div id="teacher-auth-feedback" class="feedback"></div>
+      </div>
+      <div id="teacher-content" class="hidden">
+        <div class="filters">
+          <label>学生 / Student:
+            <select id="student-filter"><option value="">全部 / All</option></select>
+          </label>
+          <label>能力项 / Skill:
+            <select id="skill-filter"><option value="">全部 / All</option></select>
+          </label>
+          <button id="refresh-stats-btn">刷新 / Refresh</button>
+        </div>
+        <div id="teacher-evaluation-content"></div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
