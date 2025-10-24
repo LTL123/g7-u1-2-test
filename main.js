@@ -77,7 +77,7 @@ QUESTIONS.push(
   // 1
   { id: '1-e-2', skill: 1, difficulty: 1, prompt: '向东为正方向，向西为负方向。向西走 4 步表示为？', type: 'numeric', answerNum: -4 },
   { id: '1-m-2', skill: 1, difficulty: 2, prompt: '比较 -7 与 -2 的大小，输入较大的数。', type: 'numeric', answerNum: -2 },
-  { id: '1-h-2', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x>0 输入较大者。', type: 'numeric', answerNum: 'x' },
+  { id: '1-h-2', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x < 0 输入较大者。', type: 'expr', answerNum: '-x' },
   // 2
   { id: '2-e-2', skill: 2, difficulty: 1, prompt: '计算 3/5 - 1/5 的值。', type: 'numeric', answerNum: 2/5 },
   { id: '2-m-2', skill: 2, difficulty: 2, prompt: '计算 (-1.2) + 0.7 的值。', type: 'numeric', answerNum: -0.5 },
@@ -109,7 +109,7 @@ QUESTIONS.push(
   // 1 正负数与零
   { id: '1-e-3', skill: 1, difficulty: 1, prompt: '海拔下降 8 米，应该表示为？', type: 'numeric', answerNum: -8 },
   { id: '1-m-3', skill: 1, difficulty: 2, prompt: '比较 -1 与 -5 的大小，输入较大的数。', type: 'numeric', answerNum: -1 },
-  { id: '1-h-3', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x<0 输入较大者。', type: 'numeric', answerNum: 'x' },
+  { id: '1-h-3', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x<0 输入较大者。', type: 'expr', answers: ['-x'] },
   // 2 有理数运算
   { id: '2-e-3', skill: 2, difficulty: 1, prompt: '计算 2/3 - 1/6。', type: 'numeric', answerNum: 1/2 },
   { id: '2-m-3', skill: 2, difficulty: 2, prompt: '计算 (-2/5) + 3/10。', type: 'numeric', answerNum: -1/10 },
@@ -299,13 +299,32 @@ function extractVars(expr) {
   (m||[]).forEach(ch => set.add(ch));
   return Array.from(set);
 }
+function normalizeExprForEval(s) {
+  if (!s) return '';
+  let t = s.replace(/\s+/g, '');
+  t = t.replace(/−/g, '-');
+  // Insert explicit multiplication for implicit cases
+  // number followed by letter, e.g., 2a -> 2*a
+  t = t.replace(/([0-9])([a-zA-Z])/g, '$1*$2');
+  // letter followed by letter, e.g., ab -> a*b
+  t = t.replace(/([a-zA-Z])([a-zA-Z])/g, '$1*$2');
+  // letter followed by '(', e.g., a(b+1) -> a*(b+1)
+  t = t.replace(/([a-zA-Z])(\()/g, '$1*$2');
+  // number followed by '(', e.g., 2(x+1) -> 2*(x+1)
+  t = t.replace(/([0-9])(\()/g, '$1*$2');
+  // ')' followed by letter or number, e.g., )(a) or )2 -> )*a, )*2
+  t = t.replace(/(\))([a-zA-Z0-9])/g, '$1*$2');
+  // ')' followed by '(', e.g., )( -> )*(
+  t = t.replace(/(\))(\()/g, '$1*$2');
+  return t;
+}
 function exprEquivalent(userExpr, expectedList) {
   try {
-    const cleanUser = userExpr.replace(/\s+/g, '');
+    const cleanUser = normalizeExprForEval(userExpr || '');
     const userVars = extractVars(cleanUser);
     const testVals = [-3,-2,-1,1,2,3];
     for (const exp of expectedList) {
-      const cleanExp = exp.replace(/\s+/g, '');
+      const cleanExp = normalizeExprForEval(exp || '');
       const expVars = extractVars(cleanExp);
       const vars = Array.from(new Set([...userVars, ...expVars]));
       let allOk = true;
