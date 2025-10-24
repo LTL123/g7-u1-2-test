@@ -77,7 +77,7 @@ QUESTIONS.push(
   // 1
   { id: '1-e-2', skill: 1, difficulty: 1, prompt: '向东为正方向，向西为负方向。向西走 4 步表示为？', type: 'numeric', answerNum: -4 },
   { id: '1-m-2', skill: 1, difficulty: 2, prompt: '比较 -7 与 -2 的大小，输入较大的数。', type: 'numeric', answerNum: -2 },
-  { id: '1-h-2', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x < 0 输入较大者。', type: 'expr', answerNum: '-x' },
+  { id: '1-h-2', skill: 1, difficulty: 3, prompt: '绝对值相等的数：-x 与 x，哪个更大？若 x < 0 输入较大者。', type: 'expr', answer: ['-x'] },
   // 2
   { id: '2-e-2', skill: 2, difficulty: 1, prompt: '计算 3/5 - 1/5 的值。', type: 'numeric', answerNum: 2/5 },
   { id: '2-m-2', skill: 2, difficulty: 2, prompt: '计算 (-1.2) + 0.7 的值。', type: 'numeric', answerNum: -0.5 },
