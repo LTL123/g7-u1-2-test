@@ -96,7 +96,7 @@ QUESTIONS.push(
   { id: '5-h-2', skill: 5, difficulty: 3, prompt: '解方程：5x - (x - 2) = 10。求 x。', type: 'numeric', answerNum: 2 },
   // 6
   { id: '6-e-2', skill: 6, difficulty: 1, prompt: '解方程组：x + y = 6，x - y = 2。求 x 的值。', type: 'numeric', answerNum: 4 },
-  { id: '6-m-2', skill: 6, difficulty: 2, prompt: '解方程组：x + 2y = 9，2x + y = 10。求 x。', type: 'numeric', answerNum: 4 },
+  { id: '6-m-2', skill: 6, difficulty: 2, prompt: '解方程组：x + 2y = 9，2x + y = 10。求 x。', type: 'numeric', answerNum: 11/3 },
   { id: '6-h-2', skill: 6, difficulty: 3, prompt: '解方程组：3x + 0.5y = 10，x - y = 1。求 x。', type: 'numeric', answerNum: 3 },
   // 7
   { id: '7-e-2', skill: 7, difficulty: 1, prompt: '公交每 10 分钟一班，等待 30 分钟可坐几班？', type: 'numeric', answerNum: 3 },
